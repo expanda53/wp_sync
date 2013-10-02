@@ -1,6 +1,6 @@
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <?php
-  //include "wp_upload_sync.php";
+  include "wp_upload_sync.php";
   //die('stop');
   $mysqli = new mysqli('localhost','x004175_db','LIkh3T0QVt','x004175_db'); 
   if (!$mysqli) { 

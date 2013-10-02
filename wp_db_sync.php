@@ -1,4 +1,4 @@
- <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
 <?php
   //include "wp_upload_sync.php";
   //die('stop');

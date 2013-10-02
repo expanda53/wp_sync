@@ -1,6 +1,6 @@
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <?php
-  include "wp_upload_sync.php";
+    include "wp_upload_sync.php";
   //die('stop');
   $mysqli = new mysqli('localhost','x004175_db','LIkh3T0QVt','x004175_db'); 
   if (!$mysqli) { 
@@ -9,14 +9,14 @@
   echo 'Connection OK'; 
   
   /* lekérjük a wphu_posts táblából azokat a rekordokat, ahol a post_type='attachment' és a post_mime_type='image/jpeg' */
-  $sql="select * from wphu_posts where post_type='attachment' and post_mime_type='image/jpeg' /*LIMIT 1*/";
+  $sql="select * from wphu_posts where post_type='attachment' and post_mime_type in ('image/jpeg','image/png') /*LIMIT 1*/";
   if ($result=$mysqli->query($sql)) {
     while($huobj = $result->fetch_object()){
        /* megnézzük, hogy ez szerepel-e már a wpen_posts táblában */
         //$obj->ID
         $post_name =  $huobj->post_name;
         /* */
-        $sql="select count(1) rcount from wpen_posts where post_type='attachment' and post_mime_type='image/jpeg' and post_name='$post_name'";
+        $sql="select count(1) rcount from wpen_posts where post_type='attachment' and post_mime_type in ('image/jpeg','image/png') and post_name='$post_name'";
         if ($en=$mysqli->query($sql)) {
           while($enobj = $en->fetch_object()){
             if ($enobj->rcount==0) {

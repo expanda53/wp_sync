@@ -43,8 +43,7 @@
         foreach ($copy as $file) {
         //This needs to be the full path to the file you want to send.
         $target_url_param=$target_url."?PATH=$file";
-	      echo $file_name_with_full_path = realpath('./wp-content/uploads/'.$file);
-        echo "<br>";
+	      $file_name_with_full_path = realpath('./wp-content/uploads/'.$file);
         // curl will accept an array here too.
         // Many examples I found showed a url-encoded string instead.
         // Take note that the 'key' in the array will be the key that shows up in the
@@ -56,8 +55,15 @@
 	        curl_setopt($ch, CURLOPT_URL,$target_url_param);
 	        curl_setopt($ch, CURLOPT_POST,1);
 	        curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
-          curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+          //curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
 	        $result=curl_exec ($ch);
+          if ($result=='<!--ok-->') {
+            $count_image++;
+            logol("image ok:$file");
+          }
+          else {
+            logol("image error:$file",true);
+          }
 	        curl_close ($ch);
 	        //echo $result;
         }

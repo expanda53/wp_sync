@@ -1,12 +1,30 @@
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <?php
+  
+  function logol($text, $show=false) {
+       $dat=date('y.m.d H:i:s');
+       $fnev="log/wpsync.log";
+       $fp = fopen($fnev, 'a');
+       $text=$dat." - ".$text;
+       $return=" \r\n";
+       fwrite($fp, $text.$return);
+       fclose($fp);
+       
+       if ($show) echo "<pre>$text<br><pre>";
+  }
+  
+  $count_image=0;
+  $count_posts=0;
+  $count_postmeta=0; 
+  
   include "wp_upload_sync.php";
   //die('stop');
   $mysqli = new mysqli('localhost','x004175_db','LIkh3T0QVt','x004175_db'); 
-  if (!$mysqli) { 
-	 die('Could not connect to MySQL: ' . mysqli_error()); 
+  if (!$mysqli) {
+   logol('Could not connect to MySQL: ' . mysqli_error() ,true);  
+	 die(); 
   } 
-  echo 'Connection OK'; 
+  logol('MySQL connection OK.');
   
   /* lekérjük a wphu_posts táblából azokat a rekordokat, ahol a post_type='attachment' és a post_mime_type='image/jpeg' */
   $sql="select * from wphu_posts where post_type='attachment' and post_mime_type in ('image/jpeg','image/png') /*LIMIT 1*/";
@@ -40,7 +58,8 @@
                  $postid_en=$mysqli->insert_id;
                  if ($postid_en) {
                     /* ha sikerült beszúrni a wpen_posts táblába, akkor a wpen_postmeta táblába is be kell szúrni */
-                    echo "insert wpen_posts ok.";
+                    logol("$post_name: insert wpen_posts ok.");
+                    $count_posts++;
                     /* lekérdezzük a wphu_postmetából a megfelelő sorokat */
                     $sql="select * from wphu_postmeta where post_id='$postid_hu'";
                     if ($metahu=$mysqli->query($sql)) {
@@ -64,10 +83,11 @@
                           }
                           $sql="insert into wpen_postmeta ($fields) values ($values);";
                           if($mysqli->query($sql)) {
-                            echo "insert wpen_postmeta ok.";
+                            logol("$post_name: insert wpen_postmeta ok.");
+                            $count_postmeta++;
                           }
                           else {
-                            echo "insert wpen_postmeta error.";
+                            logol("$post_name: insert wpen_postmeta error.",true);
                           }
                           
                       }
@@ -75,7 +95,7 @@
 /**************/
                     }
                  }
-                 else echo "insert wpen_posts error.";
+                 else logol("$post_name:insert wpen_posts error.",true);
               }
             }
             
@@ -86,5 +106,9 @@
     }
        
   }         
-  mysqli::close($link);
+  $mysqli->close();
+  logol("Kész.",true);
+  logol("$count_image db kép feltöltve",true);
+  logol("$count_posts db post frissítve",true);
+  logol("$count_postmeta db postameta frissítve.");
 ?> 
